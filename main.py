@@ -274,7 +274,7 @@ def get_selected_elements(selected_elements):
                   if(channel_catagory[edge[0]][0] in selected_elements and channel_catagory[edge[0]][1] in selected_elements and channel_catagory[edge[1]][0] in selected_elements and channel_catagory[edge[1]][1] in selected_elements):
                     #print(edge[0])
                     #print(selected_elements,channel_catagory[edge[0]], channel_catagory[edge[1]])"""
-        element = {'data': {'source': str(edge), 'target': str(edge2),'color':color_map[colo_ede]}}
+        element = {'data': {'source': str(edge), 'target': str(edge2),'color':color_map[cat]}}
         elements_edges_2.append(element)
   return elements_nodes_1, elements_edges_2
 
