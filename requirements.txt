@@ -3,3 +3,4 @@ pandas
 networkx
 dash_cytoscape
 plotly
+gunicorn
