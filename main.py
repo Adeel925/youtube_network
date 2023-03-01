@@ -2,11 +2,12 @@ import dash
 import dash_cytoscape as cyto
 import networkx as nx
 import plotly.colors as colors
-import dash_html_components as html
+from dash import html
 from collections import Counter
-import dash_core_components as dcc
+from dash import dcc
 from dash.dependencies import Output, Input, State
-import dash_table
+from dash import dash_table
+
 app = dash.Dash(__name__)
 
 # read networkx graph that we created using notebook
@@ -22,7 +23,7 @@ for node in G.nodes(data=True):
 ## setting node positions
 node_pos = {}
 for node in G.nodes(data=True):
-    print(node)
+    #print(node)
     node_pos[node[0]] = node[1]["postions"]
 
 ##Total availibale catagories
@@ -30,7 +31,7 @@ lss = list()
 for lis in list(channel_catagory.values()):
     for cat in lis:
         lss.append(cat)
-print("Total unique content catagoires : ",len(set(lss)))
+#print("Total unique content catagoires : ",len(set(lss)))
 my_counter = Counter(lss)
 #print(my_counter)
 total_Catagories = len(set(my_counter.keys()))
@@ -85,16 +86,16 @@ color_names = random.sample(color_name, k=total_Catagories)
 
 #color_names = [name.strip() for name in color_name][:total_Catagories:]
 
-print(len(color_names))
-print(total_Catagories)
-print(len(my_counter))
-print(len(sorted_values))
+#print(len(color_names))
+#print(total_Catagories)
+#print(len(my_counter))
+#print(len(sorted_values))
 
 color_map = {}
 for i in range(len(color_names)):
     color_map[sorted_values[i]] = color_names[i]
 
-print(color_map)
+#print(color_map)
 
 
 # Convert the graph to a Cytoscape-compatible format
