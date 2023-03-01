@@ -11,6 +11,7 @@ app = dash.Dash(__name__)
 
 # read networkx graph that we created using notebook
 G = nx.read_gml("layout2.gml")
+server = app.server
 
 
 #setting colors of the nodes on the basis of there catagoires
