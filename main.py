@@ -376,7 +376,11 @@ nav_content = html.Div([
             min=0,
             max=200,
             step=10,
-            value=[0,200]
+            value=[0,200],
+            marks={
+            0: {'label': '0'},
+            200: {'label': '200'}
+        }
         ),
     html.Div(id='slider-output'),
     html.Hr(),
