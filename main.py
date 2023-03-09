@@ -7,12 +7,13 @@ from collections import Counter
 from dash import dcc
 from dash.dependencies import Output, Input, State
 from dash import dash_table
-
+import pandas as pd
 app = dash.Dash(__name__)
 
-# read networkx graph that we created using notebook
-G = nx.read_gml("layout2.gml")
 server = app.server
+
+# read networkx graph that we created using notebook
+G = nx.read_gml("Final2.gml")
 
 
 #setting colors of the nodes on the basis of there catagoires
@@ -84,12 +85,7 @@ import random
 color_names = random.sample(color_name, k=total_Catagories)
 
 
-#color_names = [name.strip() for name in color_name][:total_Catagories:]
-
-#print(len(color_names))
-#print(total_Catagories)
-#print(len(my_counter))
-#print(len(sorted_values))
+#color_names = [name.strip() for name in color_name][:total_Catagories
 
 color_map = {}
 for i in range(len(color_names)):
@@ -112,15 +108,37 @@ for node in G.nodes(data=True):
       role = "No Role Info"
     #print(node_pos[node[0]][0], node_pos[node[0]][1])
     color_m = node[1]["channel_catagory"][0]
+    subcount = node[1]["sub_count"]
+
+    if(node[0] == "Krew Shorts"):
+      subcount = "196k"
+    if(node[0] == "Comedy Central Stand-Up"):
+      subcount = "2.16M"
+    if(pd.isna(subcount)):
+      pass
+    else:
+      sub_end = subcount[-1:]
+      sub_num = float(subcount.strip()[:-1])
+      
+      if(sub_end == "k" or sub_end == "K"):
+        sub_num = sub_num/1000
+        sub_num*=20
+      elif(sub_num <= 10):
+        sub_num *= 10.4
+      else:
+        sub_num *= 4
+
     element = {'data': {'id': str(node[0]),
-                       'size':float(node[1]["sub_count"])*1.4,
-                       'fontsize':float(node[1]["sub_count"])*0.8,
-                       'sub_c':float(node[1]["sub_count"]),
+                       'size':float(sub_num),
+                       'fontsize':float(sub_num)*0.08,
+                       'sub_c':str(node[1]["sub_count"]),
                         "label":str(node[0]),
                         "url":node[1]["Image"],
                        "color":color_map[color_m],
                        "niche":node[1]["channel_catagory"],
                       "channel_emp":node[1]["channel_employess"],
+                      "emp_r":node[1]["Role_Classification"],
+                      "emp_social":node[1]["Social_Handle"],
                       "role":role},
                 'position':{'x':node_pos[node[0]][0], 'y':node_pos[node[0]][1]}
                       }
@@ -159,7 +177,7 @@ node_style = {
 
 # set edge style
 edge_style = {
-    'width': '0.4px',
+    'width': '0.1px',
     'curve-style': 'bezier',
     'line-color':'data(color)'
 }
@@ -170,8 +188,8 @@ nav_style = {
     'top': '0',
     'left': '0',
     'bottom': '0',
-    'width': '28%',
-    'height':'90%',
+    'width': '14%',
+    'height':'69%',
     'padding': '20px',
     'background-color': '#f8f8f8',
     'overflow': 'scroll'
@@ -238,7 +256,7 @@ def update_output(value):
     )
     return cyto_component
 
-def get_selected_elements(selected_elements):
+def get_selected_elements(selected_elements,value2):
   elements_nodes_1 = []
   elements_edges_2 = []
 
@@ -250,54 +268,91 @@ def get_selected_elements(selected_elements):
         role = "No Role Info"
 
       color_m = node[1]["channel_catagory"]
-      for cat in color_m:
-        if(cat in selected_elements):
-          element = {'data': {'id': str(node[0]),
-                       'size':float(node[1]["sub_count"])*1.4,
-                       'fontsize':float(node[1]["sub_count"])*0.8,
-                       'sub_c':float(node[1]["sub_count"]),
-                        "label":str(node[0]),
-                        "url":node[1]["Image"],
-                       "color":color_map[cat],
-                       "niche":node[1]["channel_catagory"],
-                      "channel_emp":node[1]["channel_employess"],
-                      "role":role},
-          'position':{'x':node_pos[node[0]][0], 'y':node_pos[node[0]][1]}}
-          elements_nodes_1.append(element)
-          break
-  for edge,edge2 in G.edges():
-    for cat in selected_elements:
-      if(cat in channel_catagory[edge] and cat in channel_catagory[edge2]):
 
-        #if(channel_catagory[edge] in selected_elements and channel_catagory[edge2] in selected_elements):
-        """if(len(channel_catagory[edge[0]])>1 and len(channel_catagory[edge[1]]) >1):
-                  if(channel_catagory[edge[0]][0] in selected_elements and channel_catagory[edge[0]][1] in selected_elements and channel_catagory[edge[1]][0] in selected_elements and channel_catagory[edge[1]][1] in selected_elements):
-                    #print(edge[0])
-                    #print(selected_elements,channel_catagory[edge[0]], channel_catagory[edge[1]])"""
-        element = {'data': {'source': str(edge), 'target': str(edge2),'color':color_map[cat]}}
-        elements_edges_2.append(element)
+      subcount = node[1]["sub_count"]
+
+      if(node[0] == "Krew Shorts"):
+        subcount = "196k"
+      if(node[0] == "Comedy Central Stand-Up"):
+        subcount = "2.16M"
+      if(pd.isna(subcount)):
+        pass
+      else:
+        sub_end = subcount[-1:]
+        sub_num = float(subcount.strip()[:-1])
+        
+        
+        if(sub_end == "k" or sub_end == "K"):
+          sub_num = sub_num/1000
+        #print(sub_num)
+        #print(value2[0], value2[1], sub_num)
+        if(sub_num<value2[0] and sub_num > value2[1]):
+          continue
+        else:
+          for cat in color_m:
+            if(cat in selected_elements):
+              if(sub_num>value2[0] and sub_num <value2[1]):
+                #print(sub_num)
+                if(sub_num <= 5):
+                  sub_num *= 12.4
+                else:
+                  sub_num *= 4
+                element = {'data': {'id': str(node[0]),
+                             'size':float(sub_num),
+                             'fontsize':float(sub_num)*0.08,
+                             'sub_c':str(node[1]["sub_count"]),
+                              "label":str(node[0]),
+                              "url":node[1]["Image"],
+                             "color":color_map[cat],
+                             "niche":node[1]["channel_catagory"],
+                            "channel_emp":node[1]["channel_employess"],
+                            "emp_r":node[1]["Role_Classification"],
+                            "emp_social":node[1]["Social_Handle"],
+                            "role":role},
+                'position':{'x':node_pos[node[0]][0], 'y':node_pos[node[0]][1]}}
+                elements_nodes_1.append(element)
+                break
+
+  for edge,edge2 in G.edges():
+    selected_nodes = []
+    for cat in elements_nodes_1:
+      selected_nodes.append(cat["data"]["id"])
+      #print(cat)
+    if(edge in selected_nodes and edge2 in selected_nodes):
+
+      #if(channel_catagory[edge] in selected_elements and channel_catagory[edge2] in selected_elements):
+      """if(len(channel_catagory[edge[0]])>1 and len(channel_catagory[edge[1]]) >1):
+                if(channel_catagory[edge[0]][0] in selected_elements and channel_catagory[edge[0]][1] in selected_elements and channel_catagory[edge[1]][0] in selected_elements and channel_catagory[edge[1]][1] in selected_elements):
+                  #print(edge[0])
+                  #print(selected_elements,channel_catagory[edge[0]], channel_catagory[edge[1]])"""
+
+      color_m = G.nodes[edge]["channel_catagory"][0]
+      element = {'data': {'source': str(edge), 'target': str(edge2),'color':color_map[color_m]}}
+      elements_edges_2.append(element)
   return elements_nodes_1, elements_edges_2
 
 
-@app.callback(Output('cytoscape', 'elements'),
-              Input('my-checkbox', 'value'),
+@app.callback([Output('cytoscape', 'elements'),Output("slider-output", "children")],
+              [Input('my-checkbox', 'value'), Input('my-slider', 'value')],
               State('cytoscape', 'stylesheet'))
 
-def update_output(value,stylesheet):
+def update_output(value,value2,stylesheet):
+    #print(value,value2)
     if(len(value)>1):
       value = value[1:]
-    print(value)
+    #print(value)
     if 'edges' in value:
-      cyto_data = {'elements': elements_nodes+elements_edges}
-      return cyto_data['elements']
+      elements_nodes_1, elements_edges_2=get_selected_elements(list(color_map.keys()),value2)
+      cyto_data = {'elements': elements_nodes_1+elements_edges_2}
+      return cyto_data['elements'],'Selected a range "{}" and "{}"'.format(value2[0], value2[1])
     elif('notedges' in value):
       cyto_data = {'elements': elements_nodes}
       return cyto_data['elements']
     else:
-      elements_nodes_1,elements_edges_2 = get_selected_elements(value)
+      elements_nodes_1,elements_edges_2 = get_selected_elements(value,value2)
       cyto_data = {'elements': elements_nodes_1+elements_edges_2}
-      print("print:",len(elements_nodes_1))
-      return cyto_data['elements']
+      #print("print:",len(elements_nodes_1))
+      return cyto_data['elements'], 'Selected a range "{}" and "{}"'.format(value2[0], value2[1])
     
 
 
@@ -307,16 +362,25 @@ options = [{'label': 'Show edges', 'value': 'edges'}]
 options = options+[{'label': f'{i}', 'value': f'{i}'} for i in catagoires]
 
 
-
 # Define the content of the navigation panel
 nav_content = html.Div([
     dcc.Dropdown(id='my-dropdown',
                  options=dropdown_options,
                  value='preset',disabled=True),
     #html.Div(id='my-output'),
-    html.Div(id='node-info'),
+    
     html.Hr(),
-    html.H3('Top catagoires'),
+    html.H3('Select Subscriber range'),
+    dcc.RangeSlider(
+            id='my-slider',
+            min=0,
+            max=200,
+            step=10,
+            value=[0,200]
+        ),
+    html.Div(id='slider-output'),
+    html.Hr(),
+    html.H3('Top Categories'),
     html.Hr(),
     dcc.Checklist(
         id='my-checkbox',
@@ -339,7 +403,6 @@ nav_content = html.Div([
 def display_node_info(node, elements):
     nav_content_for_node = html.Div([
       html.H3("Click Node to see details"),
-      html.Hr(),
       ])
 
     style2= {
@@ -359,6 +422,8 @@ def display_node_info(node, elements):
     # create emplyoee details rows using a for loop
     chan_emp = node_data['data']['channel_emp']
     emp_role = node_data['data']['role']
+    emp_role_class = node_data['data']['emp_r']
+    emp_social_handle= node_data['data']['emp_social']
     chan_emp_dic ={}
     loop_len = 0
     if(len(chan_emp)>len(emp_role)):
@@ -377,14 +442,19 @@ def display_node_info(node, elements):
         emp_role.append("No role defined")
 
     rows = []
+    
     for i in range(0, len(chan_emp)):
         row = {'Column 1': f'{chan_emp[i]}', 
-           'Column 2': f'{emp_role[i]}'}
+           'Column 2': f'{emp_role[i]}',
+           'Column 3': f'{emp_role_class[i]}',
+           'Column 4': f'{emp_social_handle[i]}',
+           }
         rows.append(row)
-  
+    separator = " "
+    niches = separator.join(node_data['data']['niche'])
 
     nav_content_for_node = html.Div([
-      html.H3("Click Node to see details"),
+      html.H3("Node details"),
       html.Hr(),
 
       html.Table([
@@ -398,14 +468,16 @@ def display_node_info(node, elements):
                 ]),
                 html.Tr([
                     html.Td(html.Strong(f"niche:")),
-                    html.Td(f"{node_data['data']['niche']}")
+                    html.Td(f"{niches}")
                 ]),
                
-      ]),
+      ],style={"textAlign": "left"}),
 
       dash_table.DataTable(
                       columns=[{'name': 'Employee Name', 'id': 'Column 1'},
-                               {'name': 'Employee Role', 'id': 'Column 2'}],
+                               {'name': 'Employee Role', 'id': 'Column 2'},
+                               {'name': 'Role classification', 'id': 'Column 3'},
+                               {'name': 'Socail Handle', 'id': 'Column 4'}],
                       data=rows,
                       style_table={'maxWidth': '100%'}
 
@@ -421,14 +493,17 @@ def display_node_info(node, elements):
                 ])"""
 
 
+
+
 # Add the Cytoscape component to the app layout
 #app.layout = html.Div([cyto_component])
 # Add the Cytoscape component and navigation panel to the app layout
 app.layout = html.Div([
-    html.Div(style=nav_style, children=[nav_content]
+    html.Div(style=nav_style, children=[nav_content
+      ]
 
       ),
-    dcc.Tabs(id='tabs', value='tab-1', children=[
+    html.Div(id='tabs', children=[
         dcc.Tab(id ="Graph",label='Graph', value='tab-1', children=[
             html.Div([
                 cyto.Cytoscape(
@@ -445,9 +520,12 @@ app.layout = html.Div([
                     'style': edge_style
                 }]
             )
-            ], style={"height":"100%",'float': 'right'}), 
-        ],style={'width': '120%', "height":"100%",'float': 'left'}),
-    ], style={'width': '120%', "height":"100%",'float': 'left'}),
+            ]), 
+        ]),
+
+    ], style={'width': '107%','float': 'right'}),
+    html.Hr(),
+    html.Div(id='node-info',style={"textAlign": "center", "margin": "auto", "width": "70%"}),
     
 ])
 
