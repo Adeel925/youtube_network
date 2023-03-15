@@ -10,7 +10,7 @@ from dash.dependencies import Output, Input, State
 from dash import dash_table
 import pandas as pd
 #import dash_bootstrap_components as dbc
-import json
+#import json
 
 
 
@@ -159,13 +159,6 @@ for edge in G.edges():
     elements_edges.append(element)
 
 cyto_data = {'elements': elements_nodes+elements_edges}
-
-# convert the cyto_elements to a JSON string
-json_string = json.dumps(cyto_data)
-
-# write the JSON string to a file
-with open('cyto_elements.json', 'w') as f:
-    f.write(json_string)
 
 # Create a Cytoscape layout 
 layout = {'name': 'preset',
@@ -374,7 +367,7 @@ def get_selected_channel(selected_elements,label_scale):
     [Input('edge-slider', 'value')]
 )
 def update_stylesheet(edge_width):
-    # set edge style
+	# set edge style
     print(edge_width)
     node_style = {
     'width': 'data(size)',
