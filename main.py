@@ -374,7 +374,7 @@ def get_selected_channel(selected_elements,label_scale):
     [Input('edge-slider', 'value')]
 )
 def update_stylesheet(edge_width):
-	# set edge style
+    # set edge style
     print(edge_width)
     node_style = {
     'width': 'data(size)',
