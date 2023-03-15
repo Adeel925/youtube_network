@@ -3,4 +3,5 @@ pandas
 networkx
 dash_cytoscape
 plotly
+dash-bootstrap-components
 gunicorn
