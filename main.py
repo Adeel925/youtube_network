@@ -663,8 +663,7 @@ def display_node_info(node, elements):
 
 # Adding the Cytoscape component and navigation panel to the app layout
 app.layout = html.Div([
-
-	#nav division
+    #nav division
     html.Div(style=nav_style, children=[nav_content]),
     
     #graph
