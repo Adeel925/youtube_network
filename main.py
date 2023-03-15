@@ -9,13 +9,13 @@ from dash import dcc
 from dash.dependencies import Output, Input, State
 from dash import dash_table
 import pandas as pd
-import dash_bootstrap_components as dbc
+#import dash_bootstrap_components as dbc
 import json
 
 
 
 ## Calling dash app function
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__)
 server = app.server
 
 
@@ -175,7 +175,7 @@ layout = {'name': 'preset',
     }
 
 # Set the style of the Cytoscape component of the graph
-style = {'width': '80%', 'height': '750px', 'border-width': '1px', 'float': 'right'}
+style = {'width': '78%', 'height': '750px', 'border-width': '1px', 'float': 'right'}
 
 # Define the style of the Cytoscape node
 node_style = {
@@ -471,16 +471,16 @@ dropdown_options2 = [{"label": f'{node}', 'value':f'{node}'} for node in G.nodes
 
 def update_theme(theme):
     if theme == 'dark':
-        return {'color': 'white', 'backgroundColor': 'black'}
+        return {'color': 'white', 'backgroundColor': 'black',"margin":"-10px", "font-family": "Garamond"}
     else:
-        return {'color': 'black', 'backgroundColor': 'white'}
+        return {'color': 'black', 'backgroundColor': 'white',"margin":"-10px", "font-family": "Garamond"}
 
 
 
 # Define the content of the navigation panel
 nav_content = html.Div([
     
-    html.H6('Choose a theme:'),
+    html.H4('Choose a theme:'),
       dcc.RadioItems(
           id='theme-selector',
           options=[
@@ -495,7 +495,7 @@ nav_content = html.Div([
     #             value='preset',disabled=True),"""
     html.Hr(style={'backgroundColor': 'green'}),
     #html.Div(id='my-output'),
-    html.H6("Search Channel"),
+    html.H4("Search Channel"),
 
     dcc.Dropdown(id='search-input',
                 multi=True,
@@ -507,7 +507,7 @@ nav_content = html.Div([
     html.Div(id='search-output'),
     html.Hr(style={'backgroundColor': 'green'}),
     ## Multi dropdown for categories
-    html.H6('Search Categories'),
+    html.H4('Search Categories'),
     dcc.Dropdown(id='catagory_search',
                 multi=True,
                 placeholder='Search Categories...',
@@ -518,7 +518,7 @@ nav_content = html.Div([
 
     ## Slider for subscriber range
     html.Hr(style={'backgroundColor': 'green'}),
-    html.H6('Set Edge Width'),
+    html.H4('Set Edge Width'),
     dcc.Slider(
             id='edge-slider',
             min=0,
@@ -533,7 +533,7 @@ nav_content = html.Div([
         ),
 
     ## Slider for subscriber range
-    html.H6('Visible Channel Names'),
+    html.H4('Visible Channel Names'),
     dcc.Slider(
             id='label-slider',
             min=-60,
@@ -547,7 +547,7 @@ nav_content = html.Div([
         ),
     
     ## Slider for subscriber range
-    html.H6('Subscriber Range'),
+    html.H4('Subscriber Range'),
     dcc.RangeSlider(
             id='my-slider',
             min=0,
@@ -647,7 +647,7 @@ def display_node_info(node, elements):
                
       ],style={"textAlign": "left","widht":"100%"}),
       *[html.Div(children=[
-            html.H6(children=f"Role Classification: {name}"),
+            html.H4(children=f"Role Classification: {name}"),
             dash_table.DataTable(
                 columns=[{'name': col, 'id': col} for col in group.columns],
                 data=group.to_dict('records'),
@@ -663,7 +663,8 @@ def display_node_info(node, elements):
 
 # Adding the Cytoscape component and navigation panel to the app layout
 app.layout = html.Div([
-    #nav division
+
+	#nav division
     html.Div(style=nav_style, children=[nav_content]),
     
     #graph
@@ -693,7 +694,7 @@ app.layout = html.Div([
     			"margin": "auto", "width": "70%", "height":"10%",
 				'overflow': 'scroll'}),
     
-],id="theme_change", style={'color': 'white', 'backgroundColor': 'black'})
+],id="theme_change", style={'color': 'white', 'backgroundColor': 'black',"margin":"-10px", "font-family": "Garamond"})
 
 if __name__ == '__main__':
     app.run_server(debug=True)
