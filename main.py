@@ -9,12 +9,16 @@ from dash import dcc
 from dash.dependencies import Output, Input, State
 from dash import dash_table
 import pandas as pd
-import dash_bootstrap_components as dbc
+#import dash_bootstrap_components as dbc
 
 
 
 ## Calling dash app function
-app = dash.Dash(__name__,external_stylesheets=[dbc.themes.BOOTSTRAP])
+#app = dash.Dash(__name__)#,external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+app = dash.Dash(__name__, external_stylesheets=[
+    "https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+])
 server = app.server
 
 
@@ -167,7 +171,7 @@ layout = {'name': 'preset',
     }
 
 # Set the style of the Cytoscape component of the graph
-style = {'width': '80%', 'height': '780px','float':'right'}
+style = {'width': '80%', 'height': '740px','float':'right'}
 
 # Define the style of the Cytoscape node
 node_style = {
@@ -202,7 +206,7 @@ nav_style = {
     'left': '0',
     'bottom': '0',
     'width':"20%",
-    'height':'750px',
+    'height':'600px',
     'overflow': 'scroll',
     #'background-color': 'blue'
 }
@@ -469,7 +473,7 @@ def update_theme(theme):
         return {'color': 'black', 'backgroundColor': 'white'}
 
 nav_content = html.Div([
-    html.H6('Choose a Theme:', className='mb-3'),
+    html.H6('Choose a Theme'),
     dcc.RadioItems(
         id='theme-selector',
         options=[
@@ -479,8 +483,8 @@ nav_content = html.Div([
         value='dark',
         labelStyle={'display': 'inline-block'}
     ),
-    html.Hr(className='my-3',style={'backgroundColor': 'green'}),
-    html.H6("Search Channel", className='mb-3'),
+    html.Hr(style={'backgroundColor': 'green'}),
+    html.H6("Search Channel"),
     dcc.Dropdown(
         id='search-input',
         multi=True,
@@ -491,7 +495,7 @@ nav_content = html.Div([
         #className='mb-3',
         style={'color': 'black'}
     ),
-    html.H6('Search Categories', className='mb-3'),
+    html.H6('Search Categories'),
     dcc.Dropdown(
         id='catagory_search',
         multi=True,
@@ -502,8 +506,8 @@ nav_content = html.Div([
         #className='mb-3',
         style={'color': 'black'}
     ),
-    html.Hr(className='my-4',style={'backgroundColor': 'green'}),
-    html.H6('Set Line Width', className='mb-3'),
+    html.Hr(style={'backgroundColor': 'green'}),
+    html.H6('Set Line Width'),
     dcc.Slider(
         id='edge-slider',
         min=0,
@@ -514,9 +518,9 @@ nav_content = html.Div([
             0: {'label': 'Thinner'},
             1: {'label': 'Thicker'}
         },
-        className='mb-4'
+        
     ),
-    html.H6('Visible Channel Names', className='mb-3'),
+    html.H6('Visible Channel Names'),
     dcc.Slider(
         id='label-slider',
         min=-60,
@@ -529,7 +533,7 @@ nav_content = html.Div([
         },
         className='mb-3'
     ),
-    html.H6('Subscriber Range', className='mb-3'),
+    html.H6('Subscriber Range'),
     dcc.RangeSlider(
         id='my-slider',
         min=0,
@@ -540,10 +544,10 @@ nav_content = html.Div([
             0: {'label': '0m'},
             60: {'label': '58m'}
         },
-        className='mb-3'
+      
     ),
-    html.Hr(className='my-4',style={'backgroundColor': 'green'}),
-], className='p-3')
+    html.Hr(style={'backgroundColor': 'green'}),
+],)
 
 
 #########################
@@ -682,7 +686,10 @@ app.layout = html.Div(children=[
 
 style={
         'color': 'white',
-        'backgroundColor': 'black'
+        'backgroundColor': 'black',
+        "width":"100%",
+        'margin': 0,
+        'padding': 0
     },
 
 )
