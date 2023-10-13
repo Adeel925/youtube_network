@@ -1,4 +1,4 @@
-# youtube_network
+# dashborad app using python and dash library for youtube_network
 
 I have created dash app that visualizes youtube channel connections based on there common geners. 
 
